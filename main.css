@@ -7,26 +7,31 @@ h1{
     font-weight: 600;
 }
 
-.title_top{
-    font-weight: 700;
-    font-size: 25px;
-    margin-bottom: -1.5rem;
+.title_top,
+.title_top_power{
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 0.2rem;
     margin-top: 2rem;
 }
 
 .title_bottom{
-    font-size: 100px;
+    font-size: 30px;
     font-weight: light;
-    letter-spacing: -.15rem;
+    letter-spacing: .25rem;
     margin-bottom: -1rem;
 }
 
-.title_top{
+.title_top,
+.title_top_power{
     visibility: hidden;
 }
 
 .row{
     text-align: center;
+    display: flex;
+    
+    justify-content: center;
 }
 
 button, button:focus, input{
@@ -34,8 +39,10 @@ button, button:focus, input{
 }
 
 .col{
+    display: flex;
+    flex-flow: column wrap;
     max-width: 600px;
-    margin: auto;
+    overflow: visible;
 }
 
 .jumbotron{

@@ -1,16 +1,18 @@
 const DEBUG = false;
 const RESIN_LIMIT = 160;
-const RECHARGE_INTERVAL = 8;    //minutes; also update html input max="" if changed
+const POWER_LIMIT = 180;
+const RESIN_RECHARGE_INTERVAL = 8;    //minutes; also update html input max="" if changed
+const POWER_RECHARGE_INTERVAL = 6;    //minutes; also update html input max="" if changed
 
 //Main
 document.querySelector("#resin").focus();
 function calculate(resin, start_time){
     const time_diff = parseInt(Math.abs(new Date().getTime() - start_time.getTime()) / 1000);
-    const minutes_to_refill = (RESIN_LIMIT - resin) * RECHARGE_INTERVAL;
+    const minutes_to_refill = (RESIN_LIMIT - resin) * RESIN_RECHARGE_INTERVAL;
 
     const H_start = parseInt(minutes_to_refill / 60);
     const M_start = parseInt(minutes_to_refill % 60);
-    const cur_res = parseInt(time_diff / (60 * RECHARGE_INTERVAL) + parseInt(resin));
+    const cur_res = parseInt(time_diff / (60 * RESIN_RECHARGE_INTERVAL) + parseInt(resin));
     const H_cur = parseInt((minutes_to_refill - time_diff / 60) / 60);
     const M_cur = parseInt((minutes_to_refill - time_diff / 60) % 60);
     const S_cur = (cur_res < RESIN_LIMIT ? parseInt((minutes_to_refill * 60 - time_diff) % 60) : 0);
@@ -21,9 +23,32 @@ function calculate(resin, start_time){
     document.querySelector("#current_resin").innerHTML = cur_res;
     document.querySelector("#refill_time").innerHTML =  H_cur + "h " + M_cur + "m " + S_cur + "s";
     document.querySelector("#refill_date").innerHTML = moment(start_time).add(H_start, "hours").add(M_start, "minutes").format("LT");
-    document.title =  cur_res + " Resin | " + H_cur + "h " + M_cur + "m " + " left";
 
     let titles = document.getElementsByClassName("title_top");
+    for (let i = 0; i < titles.length; i++) {
+        titles[i].style.visibility = "visible";
+    }
+}
+
+function calculatePower(power, start_time){
+    const time_diff = parseInt(Math.abs(new Date().getTime() - start_time.getTime()) / 1000);
+    const minutes_to_refill = (POWER_LIMIT - power) * POWER_RECHARGE_INTERVAL;
+
+    const H_start = parseInt(minutes_to_refill / 60);
+    const M_start = parseInt(minutes_to_refill % 60);
+    const cur_power = parseInt(time_diff / (60 * POWER_RECHARGE_INTERVAL) + parseInt(power));
+    const H_cur = parseInt((minutes_to_refill - time_diff / 60) / 60);
+    const M_cur = parseInt((minutes_to_refill - time_diff / 60) % 60);
+    const S_cur = (cur_power < POWER_LIMIT ? parseInt((minutes_to_refill * 60 - time_diff) % 60) : 0);
+
+    if(DEBUG)   console.log({minutes_to_refill}, {time_diff});
+    if(H_start < 0 || M_start < 0 || H_cur < 0 || M_cur < 0 || cur_power > POWER_LIMIT)   return;
+
+    document.querySelector("#current_power").innerHTML = cur_power;
+    document.querySelector("#power_refill_time").innerHTML =  H_cur + "h " + M_cur + "m " + S_cur + "s";
+    document.querySelector("#power_refill_date").innerHTML = moment(start_time).add(H_start, "hours").add(M_start, "minutes").format("LT");
+
+    let titles = document.getElementsByClassName("title_top_power");
     for (let i = 0; i < titles.length; i++) {
         titles[i].style.visibility = "visible";
     }
@@ -41,6 +66,18 @@ function calculateInit(){
     calculate(resin, start_time);
     refresh = setInterval(function(){calculate(resin, start_time)}, 1000);
     resin_obj.value = "";
+}
+
+function calculatePowerInit(){
+    let power_obj = document.querySelector("#tpower");
+    const power = power_obj.value;
+    if(power < 0 || power > POWER_LIMIT || power == "")   return;
+    
+    clearInterval(refresh);
+    const start_time = new Date();
+    calculatePower(power, start_time);
+    refresh = setInterval(function(){calculatePower(power, start_time)}, 1000);
+    power_obj.value = "";
 }
 
 //On enter key press 
