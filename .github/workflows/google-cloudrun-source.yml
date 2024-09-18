@@ -32,7 +32,7 @@ name: 'Deploy to Cloud Run from Source'
 on:
   push:
     branches:
-      - '"master"'
+      - 'main'
 
 env:
   PROJECT_ID: 'serach-271603' # TODO: update to your Google Cloud project ID
@@ -59,7 +59,7 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/search-271603/locations/global/workloadIdentityPools/cattt-workload/providers/Github' # TODO: replace with your workload identity provider
+          workload_identity_provider: 'projects/search-271603/locations/global/workloadIdentityPools/1111/providers/github' # TODO: replace with your workload identity provider
 
       - name: 'Deploy to Cloud Run'
         uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
